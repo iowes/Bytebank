@@ -3,7 +3,10 @@
 # Files and directories created by pub
 .dart_tool/
 .packages
+.idea
 build/
+ios/
+android/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -19,3 +22,6 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+# Other files
+.DS_Store
