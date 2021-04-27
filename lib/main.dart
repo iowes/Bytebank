@@ -13,7 +13,16 @@ class BytebankApp extends StatelessWidget {
   }
 }
 
-class TransferForm extends StatelessWidget {
+class TransferForm extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() {
+    return TransferFormState();
+  }
+}
+
+class TransferFormState extends State<TransferForm> {
+
   final TextEditingController _fieldAccountController = TextEditingController();
   final TextEditingController _fieldValueController = TextEditingController();
 
@@ -23,29 +32,30 @@ class TransferForm extends StatelessWidget {
       appBar: AppBar(
         title: Text('Criando Transferência'),
       ),
-      body: Column(
-        children: [
-          Editor(
-              controller: this._fieldAccountController,
-              labelText: "Numero da conta",
-              hintText: "0000"),
-          Editor(
-              controller: this._fieldValueController,
-              labelText: "Conta",
-              hintText: "0000",
-              icon: Icons.monetization_on),
-          ElevatedButton(
-            child: Text('Confirmar'),
-            onPressed: () => _createTransfer(context),
-          )
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Editor(
+                controller: this._fieldAccountController,
+                labelText: "Numero da conta",
+                hintText: "0000"),
+            Editor(
+                controller: this._fieldValueController,
+                labelText: "Conta",
+                hintText: "0000",
+                icon: Icons.monetization_on),
+            ElevatedButton(
+              child: Text('Confirmar'),
+              onPressed: () => _createTransfer(context),
+            )
+          ],
+        ),
       ),
     );
   }
-  
+
   void _createTransfer(BuildContext context) {
-    final int accountNumber =
-    int.tryParse(_fieldAccountController.text);
+    final int accountNumber = int.tryParse(_fieldAccountController.text);
     final double value = double.tryParse(_fieldValueController.text);
     if (accountNumber != null && value != null) {
       final transfer = Transfer(value, accountNumber);
@@ -80,34 +90,42 @@ class Editor extends StatelessWidget {
   }
 }
 
-class TransferList extends StatelessWidget {
+class TransferList extends StatefulWidget {
+  final List<Transfer> _list = [];
+
+  @override
+  State<StatefulWidget> createState() {
+    return TransferListState();
+  }
+}
+
+class TransferListState extends State<TransferList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Transferências"),
       ),
-      body: Column(
-        children: [
-          TransferItem(
-            transfer: Transfer(100, 1234),
-          ),
-          TransferItem(
-            transfer: Transfer(200, 1234),
-          ),
-          TransferItem(
-            transfer: Transfer(400, 1234),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: widget._list.length,
+        itemBuilder: (context, index) {
+          final Transfer transfer = widget._list[index];
+          return TransferItem(transfer: transfer);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final Future<Transfer> future = Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future<Transfer> future =
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
             return TransferForm();
           }));
 
           future.then((transfer) => {
-            debugPrint('$transfer')
+            if (transfer != null) {
+              setState(() {
+                widget._list.add(transfer);
+              })
+            }
           });
         },
         child: Icon(Icons.add),
