@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 const _appBarTitle = 'Criando Transferência';
 const _accountField = 'Numero da conta';
 const _accountFieldHint = '0000';
-const _valueField = 'Conta';
+const _valueField = 'Valor';
 const _valueFieldHint = '0000';
 const _buttonText = 'Confirmar';
 
